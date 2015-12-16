@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">Search</div>
+
+    <!-- panel-body -->
+    <div class="panel-body">
+
+        <form class="form-inline" ng-submit="search()">
+
+            <div class="form-group">
+                <label for="engine">From: </label>
+                <select id="engine" class="form-control" ng-model="selectedEngine" ng-options="item as item.name for item in engines" ng-change="engineChanged()"></select>
+                <!-- {{selectedEngine | json}} -->
+            </div>
+
+            <div class="form-group">
+                <label for="keyword">Search: </label>
+                <input id="keyword" class="form-control" type="text" ng-model="keyword">
+            </div>
+
+            <button class="btn btn-primary" type="submit"><i class="fa fa-search fa-lg"></i> Search</button>
+
+
+        </form>
+    </div>
+    <!-- end panel-body -->
+
+</div>

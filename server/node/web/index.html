@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="subakApp">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <!--
+    You can disable zooming capabilities on mobile devices by adding user-scalable=no to the viewport meta tag. This disables zooming, meaning users are only able to scroll, and results in your site feeling a bit more like a native application. Overall, we don't recommend this on every site, so use caution!
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Subak - delicious music</title>
+
+    <!-- icon from http://www.freefavicon.com/freefavicons/food/iconinfo/watermelon-152-190680.html -->
+    <link ref="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="player.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+    <!-- angular media player: https://github.com/colthreepv/angular-media-player -->
+    <script src="https://rawgit.com/colthreepv/angular-media-player/master/dist/angular-media-player.min.js" type="text/javascript"></script>
+
+    <script src="app.js"></script>
+</head>
+
+<body>
+
+    <!-- mainController -->
+    <div ng-controller="mainController" ng-init="">
+
+        <row>
+            <!-- header -->
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="page-header">
+                    <!-- image from http://www.freefavicon.com/freefavicons/food/iconinfo/watermelon-152-190680.html -->
+                    <h3>
+                        <img src="watermelon-152-190680.png" style="width:30px;"> Subak
+                        <small>delicious music</small>
+                    </h3>
+                </div>
+            </div>
+            <!-- end header -->
+        </row>
+
+        <row>
+            <!-- search form -->
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <panel-search-form></panel-search-form>
+            </div>
+            <!-- search form -->
+
+            <!-- player -->
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <panel-media-player></panel-media-player>
+            </div>
+            <!-- end player -->
+        </row>
+
+        <row>
+            <!-- search result -->
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <panel-track-list></panel-track-list>
+            </div>
+            <!-- end search result -->
+        </row>
+
+    </div>
+    <!-- end mainController -->
+</body>
+
+</html>
