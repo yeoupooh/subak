@@ -1,5 +1,5 @@
 # Subak
-Subak is a for-fun-personal-purpose music service written in many languages(hopefully).
+Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
 
 
 # DISCLAIMER
@@ -21,6 +21,15 @@ Now you can use Subak on http://localhost:8081/.
 # Build and Run Groovy Client
 It requires groovy, gradle environment. Tested on Groovy 2.4.x.
 
+## Edit subak.config.json
+You can start with copying from subak.config.sample.json
+```json
+{
+  "url": "http://localhost:8081"
+}
+```
+
+## Build and Run
 ```
 cd client/groovy
 gradle start
