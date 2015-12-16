@@ -1,0 +1,5 @@
+install: true
+
+script:
+ - cd client/groovy
+ - ./gradlew test start
