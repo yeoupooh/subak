@@ -13,5 +13,5 @@ before_script:
 
 script:
  - pushd client/groovy
- - ./gradlew test start
+ - ./gradlew jar test
  - popd
