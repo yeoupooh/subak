@@ -5,7 +5,7 @@ install:
 
 before_script:
  - pushd server/node/server
- - npm start
+ - npm start &
  - popd
 
 script:
