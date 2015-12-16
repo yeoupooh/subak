@@ -22,7 +22,7 @@ Now you can use Subak on http://localhost:8081/.
 It requires groovy, gradle environment. Tested on Groovy 2.4.x.
 
 ## Edit subak.config.json
-You can start with copying from subak.config.sample.json
+You can start with copying from subak.config.sample.json under client/groovy/src/main/resources.
 ```json
 {
   "url": "http://localhost:8081"
