@@ -13,16 +13,13 @@
         syncHttp = require('sync-request'),
         server,
         engines,
-        mimeTypes = [
-            {
-                ext: '.ico',
-                mimeType: 'image/x-icon'
-            },
-            {
-                ext: '.png',
-                mimeType: 'image/png'
-            }
-        ];
+        mimeTypes = [{
+            ext: '.ico',
+            mimeType: 'image/x-icon'
+        }, {
+            ext: '.png',
+            mimeType: 'image/png'
+        }];
 
     function log(msg) {
         console.log(msg);
@@ -87,8 +84,10 @@
     engines = [];
 
     fs.readdirSync(__dirname + '/engines').forEach(function (file) {
-        console.log('engine file=[%s]', JSON.stringify(file));
-        registerEngine(require('./engines/' + file));
+        if (file.indexOf('.js') > -1) {
+            console.log('engine file=[%s]', JSON.stringify(file));
+            registerEngine(require('./engines/' + file));
+        }
     });
 
     // WON'T IMPLEMENT
