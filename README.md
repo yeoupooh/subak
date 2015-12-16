@@ -42,3 +42,7 @@ gradle start
 
 # Build your own engine
 Hack your engines referencing simple engines under sever/node/server/engines.
+
+
+# Community
+Check out https://funsubak.slack.com/
