@@ -1,4 +1,4 @@
-# Subak
+# Subak [![Build Status](https://travis-ci.org/yeoupooh/subak.svg?branch=master)](https://travis-ci.org/yeoupooh/subak)
 Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
 
 

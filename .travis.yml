@@ -1,4 +1,10 @@
-install: true
+install:
+ - cd server/node/server
+ - npm install
+
+before_script:
+ - cd server/node/server
+ - npm start
 
 script:
  - cd client/groovy
