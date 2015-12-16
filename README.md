@@ -3,8 +3,8 @@ Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service 
 
 
 # DISCLAIMER
-I don't share any copy right protected files with anyone vis this.
-I don't guarantee any legal issues with running this service by you. Totally at your risk.
+We don't share any copyright protected files with anyone via this.
+We don't guarantee any legal issues with running this service by you. Totally at your risk.
 
 
 # Build and Run Node Server
