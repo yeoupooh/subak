@@ -1,11 +1,14 @@
 install:
- - cd server/node/server
+ - pushd server/node/server
  - npm install
+ - popd
 
 before_script:
- - cd server/node/server
+ - pushd server/node/server
  - npm start
+ - popd
 
 script:
- - cd client/groovy
+ - pushd client/groovy
  - ./gradlew test start
+ - popd
