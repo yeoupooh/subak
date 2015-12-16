@@ -7,6 +7,9 @@ before_script:
  - pushd server/node/server
  - npm start &
  - popd
+ - pushd client/groovy/src/main/resources
+ - cp subak.config.sample.json subak.config.json
+ - popd
 
 script:
  - pushd client/groovy
