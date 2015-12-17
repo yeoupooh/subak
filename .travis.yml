@@ -1,3 +1,6 @@
+env:
+ - TRUN_ON_TRAVIS=true
+
 install:
  - pushd server/node
  - npm install
@@ -5,7 +8,7 @@ install:
 
 before_script:
  - pushd server/node
- - RUN_ON_TRAVIS=true npm test
+ - npm test
  - popd
  - pushd client/groovy/src/main/resources
  - cp subak.config.sample.json subak.config.json
