@@ -17,7 +17,9 @@
         });
 
         afterEach(function () {
-            server.close();
+            if (server !== undefined) {
+                server.close();
+            }
         });
 
         it('responds to /', function testSlash(done) {
@@ -41,49 +43,6 @@
                     done();
                 });
         });
-
-        // var engines = [{
-        //     'name': 'a'
-        // }, {
-        //     'name': 'b'
-        // }];
-        // engines.forEach(function (engine) {
-        //     it('response to engine [' + engine.name + ']', function testEngine(done) {
-        //         console.log('engine=', engine);
-        //         done();
-        //     });
-        // });
-
-        // request(require('../app/server'))
-        //     .get('/api/engines')
-        //     .end(function (err1, res1) {
-        //         var engines = [];
-        //         /*jslint unparam: true */
-        //         // console.log('res.body=', res1.body);
-        //         // assert(res.statusCode === 200);
-        //         // assert(res.body.length > 0);
-        //         engines = res1.body;
-        //         engines.forEach(function (engine) {
-        //             console.log('engine.name=', engine.name);
-        //             it('response to engine [' + engine.name + ']', function testEngine(done) {
-        //                 var path = engine.path;
-        //
-        //                 // console.log('engine.name=', engine.name);
-        //                 if (path.indexOf(':keyword') > -1) {
-        //                     path = path.replace(/:keyword/g, '2000');
-        //                 }
-        //                 request(server)
-        //                     .get(path)
-        //                     .end(function (err, res) {
-        //                         console.log(engine.name, 'es.body.tracks.length=', res.body.tracks.length);
-        //                         assert(res.statusCode === 200);
-        //                         assert(res.body !== undefined);
-        //                         // assert(res.body.length > 0);
-        //                         done();
-        //                     });
-        //             });
-        //         });
-        //     });
 
         describe('responds to all engines', function () {
             request(require('../app/server'))
