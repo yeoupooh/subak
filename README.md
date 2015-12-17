@@ -7,12 +7,13 @@ We don't share any copyright protected files with anyone via this.
 We don't guarantee any legal issues with running this service by you. Totally at your risk.
 
 
-# Build and Run Node Server
-It requires nodejs environment. Tested on NodeJS 5.x.
+# Build, Test and Run Node Server
+It requires nodejs, mocha environment. Tested on NodeJS 5.x.
 
 ```
-cd server/node/server
+cd server/node
 npm install
+npm test
 npm start
 ```
 
