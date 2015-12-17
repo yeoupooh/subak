@@ -1,5 +1,6 @@
 /*global console */
 /*global require */
+/*global process */
 /*global describe, beforeEach, afterEach, it */
 
 (function () {
@@ -17,8 +18,11 @@
         });
 
         afterEach(function () {
-            if (server !== undefined) {
+            if (process.env.RUN_ON_TRAVIS !== undefined) {
                 server.close();
+            } else {
+                // FIXME This is workaround to avoid crash on travis
+                console.log('skip server.close()');
             }
         });
 

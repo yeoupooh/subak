@@ -5,14 +5,17 @@ install:
 
 before_script:
  - pushd server/node
+ - export RUN_ON_TRAVIS=true
  - npm test
- - npm start &
  - popd
  - pushd client/groovy/src/main/resources
  - cp subak.config.sample.json subak.config.json
  - popd
 
 script:
+ - pushd server/node
+ - npm start &
+ - popd
  - pushd client/groovy
  - ./gradlew jar test
  - popd
