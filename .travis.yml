@@ -1,10 +1,10 @@
 install:
- - pushd server/node/server
+ - pushd server/node/app
  - npm install
  - popd
 
 before_script:
- - pushd server/node/server
+ - pushd server/node/app
  - npm test
  - npm start &
  - popd
