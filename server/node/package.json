@@ -11,18 +11,16 @@
     },
     "devDependencies": {},
     "scripts": {
-        "test": "test",
-        "start": "node server.js"
+        "test": "mocha --timeout 50000 tests",
+        "start": "node app/server.js"
     },
     "repository": {
         "type": "git",
         "url": "git@gitlab.com:yeoupooh/subak.git"
     },
     "keywords": [
-    "subak",
-    "melon",
-    "killer"
-  ],
+        "subak"
+    ],
     "author": "yeoupooh",
-    "license": "GPL"
+    "license": "GPLv2"
 }

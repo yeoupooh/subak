@@ -53,8 +53,8 @@
                 artist,
                 title;
 
-            console.log('--------------');
-            console.log('element=[%s]', elem);
+            // console.log('--------------');
+            // console.log('element=[%s]', elem);
 
             albumArt = $(this).find('.image_type15 img').attr('src');
             title = $(this).find('.rank01 a').text();
@@ -68,10 +68,10 @@
                 title = title.trim();
             }
 
-            console.log('albumart=', albumArt);
-            console.log('artist=', artist);
-            console.log('title=', title);
-            console.log('file=', file);
+            // console.log('albumart=', albumArt);
+            // console.log('artist=', artist);
+            // console.log('title=', title);
+            // console.log('file=', file);
 
             if (title !== undefined && title.length > 0) {
                 tracks.push({
@@ -103,8 +103,8 @@
                 artist,
                 title;
 
-            console.log('--------------');
-            console.log('element=[%s]', elem);
+            // console.log('--------------');
+            // console.log('element=[%s]', elem);
 
             title = $(this).find('.t_left .ellipsis a.fc_gray').text();
             artist = $(this).find('.t_left .checkEllipsisSongdefaultList').text();
@@ -116,10 +116,10 @@
                 title = title.trim();
             }
 
-            console.log('albumart=', albumArt);
-            console.log('artist=', artist);
-            console.log('title=', title);
-            console.log('file=', file);
+            // console.log('albumart=', albumArt);
+            // console.log('artist=', artist);
+            // console.log('title=', title);
+            // console.log('file=', file);
 
             if (title !== undefined && title.length > 0) {
                 tracks.push({

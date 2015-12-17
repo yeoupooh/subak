@@ -5,6 +5,7 @@ install:
 
 before_script:
  - pushd server/node/server
+ - npm test
  - npm start &
  - popd
  - pushd client/groovy/src/main/resources

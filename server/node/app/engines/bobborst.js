@@ -33,7 +33,7 @@
                 title,
                 rank;
 
-            console.log('element=[%s]', elem);
+            // console.log('element=[%s]', elem);
 
             rank = $(this).find('td').eq(0).text();
             title = $(this).find('td').eq(2).text();
@@ -46,11 +46,11 @@
                 title = title.trim();
             }
 
-            console.log('albumart=', albumArt);
-            console.log('artist=', artist);
-            console.log('title=', title);
-            console.log('file=', file);
-            console.log('--------------');
+            // console.log('albumart=', albumArt);
+            // console.log('artist=', artist);
+            // console.log('title=', title);
+            // console.log('file=', file);
+            // console.log('--------------');
 
             if (title !== undefined && title.length > 0) {
                 tracks.push({
