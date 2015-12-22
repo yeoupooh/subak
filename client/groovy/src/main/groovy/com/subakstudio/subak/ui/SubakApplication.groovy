@@ -83,7 +83,7 @@ class SubakApplication {
         engines.clear()
         searchEngines.clear()
         cmbModel.engines.clear()
-        new Thread({
+        swing.doOutside {
             def config = new JsonSlurper().parse(getClass().getResourceAsStream("/subak.config.json"))
             api = new SubakApi(config.url)
 
@@ -96,8 +96,7 @@ class SubakApplication {
                     addTrackListPanel(engine)
                 }
             }
-
-        }).start()
+        }
     }
 
     def removeTrackListPanel(panel) {
@@ -122,11 +121,6 @@ class SubakApplication {
     }
 
     def start() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            void run() {
-                loadEngines()
-            }
-        })
+        loadEngines()
     }
 }

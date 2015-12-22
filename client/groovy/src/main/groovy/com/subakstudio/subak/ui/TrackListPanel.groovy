@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpResponseException
 
 import javax.swing.*
+import javax.swing.event.ListSelectionListener
 import javax.swing.filechooser.FileFilter
 
 /**
@@ -19,6 +20,7 @@ class TrackListPanel extends JPanel {
     def trackList = []
     def tableModelForTrackList
     def msg = new MsgModel()
+    def popupMenuOnTable
 
     TrackListPanel(swing, engine, api, closeCallback) {
         this.swing = swing
@@ -28,13 +30,39 @@ class TrackListPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS))
 
+        popupMenuOnTable = swing.popupMenu() {
+            menuItem(text: 'Play', actionPerformed: {
+                def selected = trackList[trackListTable.selectionModel.minSelectionIndex]
+                log.debug(selected.toString())
+            })
+        }
+
+        log.debug(popupMenuOnTable.toString())
+
+        swing.table(id: 'trackListTable', componentPopupMenu: popupMenuOnTable, selectionMode: ListSelectionModel.SINGLE_SELECTION) {
+            trackListTable.selectionModel.addListSelectionListener({ evt ->
+                log.debug("selection changed" + trackListTable.selectionModel)
+                DefaultListSelectionModel model = trackListTable.selectionModel
+                log.debug(model.maxSelectionIndex + "," + model.minSelectionIndex + "," + model.leadSelectionIndex)
+                log.debug(trackList[model.leadSelectionIndex].toString())
+            } as ListSelectionListener)
+
+            tableModelForTrackList = tableModel(list: trackList) {
+                closureColumn(header: 'File', read: { row -> return row.file })
+                closureColumn(header: 'Track', read: { row -> return row.track })
+                closureColumn(header: 'Artist', read: { row -> return row.artist })
+                closureColumn(header: 'Size', read: { row -> return row.size })
+                closureColumn(header: 'Length', read: { row -> return row.length })
+                closureColumn(header: 'Bit Rate', read: { row -> return row.bitrate })
+            }
+        }
+
         add((JComponent) swing.vbox {
             hbox {
                 hbox {
                     button('Close', actionPerformed: {
                         println(tabs)
                         println(tabs.selectedIndex)
-//                    tabs.remove(tabs.selectedIndex)
                         closeCallback(this)
                     })
                     button('Refresh', actionPerformed: {
@@ -42,23 +70,13 @@ class TrackListPanel extends JPanel {
                         loadTracksAsync(keyword)
                     })
                     button('Save to .xspf', actionPerformed: {
-//                    saveToXspf(trackList)
                         saveToXspf()
                     })
                     label(text: swing.bind(source: msg, sourceProperty: 'text'))
                 }
             }
             scrollPane {
-                table {
-                    tableModelForTrackList = tableModel(list: trackList) {
-                        closureColumn(header: 'File', read: { row -> return row.file })
-                        closureColumn(header: 'Track', read: { row -> return row.track })
-                        closureColumn(header: 'Artist', read: { row -> return row.artist })
-                        closureColumn(header: 'Size', read: { row -> return row.size })
-                        closureColumn(header: 'Length', read: { row -> return row.length })
-                        closureColumn(header: 'Bit Rate', read: { row -> return row.bitrate })
-                    }
-                }
+                widget(trackListTable)
             }
         })
     }
@@ -75,11 +93,12 @@ class TrackListPanel extends JPanel {
                 ] as FileFilter
         )
         if (dialog.showOpenDialog() == JFileChooser.APPROVE_OPTION) {
-//            if (!dialog.selectedFile.name.endsWith(".xspf")) {
-//
-//            }
-            println(dialog.selectedFile)
-            XspfFile.saveTo(trackList, dialog.selectedFile)
+            File selected = dialog.selectedFile
+            if (!selected.name.endsWith(".xspf")) {
+                selected = new File(selected.absolutePath + ".xspf")
+            }
+            println(selected)
+            XspfFile.saveTo(trackList, selected)
             return
         }
     }
@@ -87,7 +106,7 @@ class TrackListPanel extends JPanel {
     def loadTracksAsync(keyword) {
         msg.text = 'Loading...'
         trackList.clear()
-        new Thread({
+        swing.doOutside {
             def result
             try {
                 if (engine.type == 'chart') {
@@ -97,23 +116,20 @@ class TrackListPanel extends JPanel {
                 }
                 log.debug("result=[$result]")
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    void run() {
-                        result.tracks.each { track ->
-                            println(track)
-                            trackList.add(['file'  : track.file, 'track': track.track,
-                                           'artist': track.artist, 'size': track.size,
-                                           'length': track.length, 'bitrate': track.bitrate])
-                        }
-                        tableModelForTrackList.fireTableDataChanged()
-                        msg.text = 'Done.'
+                swing.doLater {
+                    result.tracks.each { track ->
+                        println(track)
+                        trackList.add(['file'  : track.file, 'track': track.track,
+                                       'artist': track.artist, 'size': track.size,
+                                       'length': track.length, 'bitrate': track.bitrate])
                     }
-                })
+                    tableModelForTrackList.fireTableDataChanged()
+                    msg.text = 'Done.'
+                }
 
             } catch (HttpResponseException e) {
                 log.error("Error in loading $engine.name with $keyword. msg=[$e.message]")
             }
-        }).start()
+        }
     }
 }
