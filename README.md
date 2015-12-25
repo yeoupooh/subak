@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/yeoupooh/subak.svg?branch=master)](https://travis-ci.org/yeoupooh/subak)
-[![license-GPLv2](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://img.shields.io/badge/license-GPLv2-blue.svg)
-[![implementation-nodejs-brightgreen](https://img.shields.io/badge/implementation-nodejs-brightgreen.svg)](https://img.shields.io/badge/implementation-nodejs-brightgreen.svg)
-[![implementation-groovy-blue](https://img.shields.io/badge/implementation-groovy-blue.svg)](https://img.shields.io/badge/implementation-groovy-blue.svg)
+[![license-GPLv2](https://img.shields.io/badge/license-GPLv2-blue.svg)](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![implementation-nodejs-brightgreen](https://img.shields.io/badge/server-nodejs-brightgreen.svg)](https://nodejs.org/en/)
+[![implementation-groovy-blue](https://img.shields.io/badge/client-groovy-blue.svg)](http://www.groovy-lang.org/)
 
 # Subak
 Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
