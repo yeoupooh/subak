@@ -109,7 +109,7 @@
 
         engines.push({
             id: 'bobborst-chart-' + id,
-            name: 'Bobborst ' + chart.name,
+            name: 'bb ' + chart.name,
             type: 'search',
             path: '/api/bobborst/year/' + path + '/:keyword',
             callback: function (req, res) {
