@@ -52,3 +52,7 @@ Hack your engines referencing simple engines under sever/node/server/engines.
 
 # Community
 Check out https://funsubak.slack.com/
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/yeoupooh/subak/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
