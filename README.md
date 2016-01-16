@@ -3,6 +3,7 @@
 [![implementation-nodejs-brightgreen](https://img.shields.io/badge/server-nodejs-brightgreen.svg)](https://nodejs.org/en/)
 [![implementation-groovy-blue](https://img.shields.io/badge/client-groovy-blue.svg)](http://www.groovy-lang.org/)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/yeoupooh/subak/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/2c7371984770499680a184a97058ccbd)](https://www.codacy.com/app/thomas-min-v1/subak)
 
 # Subak
 Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
