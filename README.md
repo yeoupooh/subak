@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/yeoupooh/subak.svg?branch=master)](https://travis-ci.org/yeoupooh/subak)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/2c7371984770499680a184a97058ccbd)](https://www.codacy.com/app/thomas-min-v1/subak)
+[![Codeship Status for yeoupooh/subak](https://codeship.com/projects/74b104a0-9e42-0133-935c-2a763bc2b06b/status?branch=master)](https://codeship.com/projects/127718)
 [![license-GPLv2](https://img.shields.io/badge/license-GPLv2-blue.svg)](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![implementation-nodejs-brightgreen](https://img.shields.io/badge/server-nodejs-brightgreen.svg)](https://nodejs.org/en/)
 [![implementation-groovy-blue](https://img.shields.io/badge/client-groovy-blue.svg)](http://www.groovy-lang.org/)
