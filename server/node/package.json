@@ -19,7 +19,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@gitlab.com:yeoupooh/subak.git"
+        "url": "git@github.com:yeoupooh/subak.git"
     },
     "keywords": [
         "subak"
