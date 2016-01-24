@@ -5,6 +5,7 @@
 [![license-GPLv2](https://img.shields.io/badge/license-GPLv2-blue.svg)](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![implementation-nodejs-brightgreen](https://img.shields.io/badge/server-nodejs-brightgreen.svg)](https://nodejs.org/en/)
 [![implementation-groovy-blue](https://img.shields.io/badge/client-groovy-blue.svg)](http://www.groovy-lang.org/)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/yeoupooh/subak/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 # Subak
 Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
@@ -41,7 +42,7 @@ You can start with copying from subak.config.sample.json under client/groovy/src
 ## Build and Run
 ```
 cd client/groovy
-gradle start
+./gradlew run
 ```
 
 # Licenses
