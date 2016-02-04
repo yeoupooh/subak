@@ -7,6 +7,8 @@
 [![license-GPLv2](https://img.shields.io/badge/license-GPLv2-blue.svg)](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 # Subak
+
+[![Join the chat at https://gitter.im/yeoupooh/subak](https://badges.gitter.im/yeoupooh/subak.svg)](https://gitter.im/yeoupooh/subak?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Subak(수박, Watermelon in Korean) is a for-fun-personal-purpose music service written in many languages(hopefully).
 
 
