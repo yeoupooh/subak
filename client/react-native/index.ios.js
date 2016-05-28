@@ -18,6 +18,15 @@ var base64Icon =
 
 class Subak extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedTab: 'redTab',
+      notifCount: 0,
+      presses: 0,
+    };
+  }
+
   static defaultProps = {
     title: '<TabBarIOS>',
     description: 'Tab-based navigation.',
@@ -27,13 +36,13 @@ class Subak extends Component {
 //    'Subak'
   //}
 
-  getInitialState() {
-    return {
-      selectedTab: 'redTab',
-      notifCount: 0,
-      presses: 0,
-    };
-  }
+  // getInitialState() {
+  //   return {
+  //     selectedTab: 'redTab',
+  //     notifCount: 0,
+  //     presses: 0,
+  //   };
+  // }
 
   _renderContent(color: string, pageText: string, num?: number) {
     return (
@@ -43,7 +52,6 @@ class Subak extends Component {
       </View>
     );
   }
-
 
   render() {
     return (
