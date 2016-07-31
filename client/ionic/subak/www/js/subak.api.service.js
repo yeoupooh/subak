@@ -23,7 +23,7 @@
 
             if (engines.length === 0) {
 
-                $http.get('http://subak.us.to:8081/api/engines').then(
+                $http.get(SubakConfig.serverBaseUrl + '/api/engines').then(
                     // success
                     function (response) {
                         engines = response.data;
