@@ -15,7 +15,7 @@
     }
   });
 
-  services.service('MediaPlayerSvc', ['MediaPlayerConstants', function(MediaPlayerConstants) {
+  services.service('MediaPlayerSvc', ['MediaPlayerConstants', '$ionicPopup', function(MediaPlayerConstants, $ionicPopup) {
     var eventListeners = {},
       media,
       self = this,
@@ -42,6 +42,22 @@
 
     changeState(0); // Media.MEDIA_NONE
 
+    this.alertIfNoMediaSupport = function() {
+      if (window.Media === undefined) {
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+          title: 'Error',
+          template: 'This device does not support playing media.'
+        });
+        alertPopup.then(function(res) {
+          console.log('alert close');
+        });
+        return true;
+      }
+
+      return false;
+    }
+
     this.resume = function() {
       if (media !== undefined) {
         media.play();
@@ -55,6 +71,9 @@
     };
 
     this.toggle = function() {
+      if (this.alertIfNoMediaSupport()) {
+        return;
+      }
       if (this.state === Media.MEDIA_PAUSED) {
         this.resume();
       } else {
@@ -79,8 +98,7 @@
       this.track = track;
 
       // Not in device, media doesn't not support
-      if (Media === undefined) {
-        console.error('Media not supported.');
+      if (this.alertIfNoMediaSupport()) {
         notifyEvent({
           id: Events.MEDIA_ERROR,
           data: 'Media not supported'
@@ -128,6 +146,33 @@
       }
       eventListeners[listener.name] = undefined;
     };
+
+    if (window.PhoneCallTrap) {
+      window.PhoneCallTrap.onCall(function(state) {
+        console.log("PhoneCallTrap.onCall: " + state);
+
+        switch (state) {
+          // when phone is ringing not received yet
+          case "RINGING":
+            console.log("Phone is ringing");
+            break;
+
+            // when receive call
+          case "OFFHOOK":
+            console.log("Phone is off-hook");
+            // NOTE no need to suspend or stop music because automatically it is muted
+            //$scope.player.stop();
+            break;
+
+            // when call is dropped
+          case "IDLE":
+            console.log("Phone is idle");
+            break;
+        }
+      });
+    } else {
+      console.log('PhoneCallTrap not supported');
+    }
 
   }]);
 
