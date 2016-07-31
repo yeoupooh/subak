@@ -1,5 +1,15 @@
 angular.module('starter.controllers', [])
 
+.controller('AboutCtrl', function($scope) {})
+
+.controller('SettingsCtrl', function($scope) {})
+
+.controller('SearchCtrl', function($scope) {})
+
+.controller('ChartsCtrl', function($scope) {})
+
+.controller('PlayerCtrl', function($scope) {})
+
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {

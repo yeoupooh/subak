@@ -1,0 +1,27 @@
+<ion-view title="Player" ng-controller="MediaPlayerCtrl">
+    <ion-content>
+
+        <div class="list card">
+
+            <div class="item item-avatar">
+                <h2>{{player.track.track}}</h2>
+                <p>{{player.track.artist}}</p>
+            </div>
+
+            <div class="item item-image" ng-show="player.track.albumart !== undefined">
+                <img ng-src="{{player.track.albumart}}" style="height: 300px;">
+            </div>
+
+        </div>
+
+    </ion-content>
+
+    <ion-footer-bar class="bar-dark">
+        <div class="button-bar">
+            <button class="button button-icon icon ion-ios-skipbackward"></button>
+            <media-play-button player-state="{{state}}" class="button button-icon icon" ng-click="player.toggle()"></media-play-button>
+            <button class="button button-icon icon ion-ios-skipforward"></button>
+        </div>
+    </ion-footer-bar>
+
+</ion-view>

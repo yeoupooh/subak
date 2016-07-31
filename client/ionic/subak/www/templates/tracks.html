@@ -1,0 +1,19 @@
+<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()" spinner="none" disable-pulling-rotation="true">
+</ion-refresher>
+
+<button class="button button-full button-stable" ng-show="settings.get('isDebug')" ng-click="loadDummy()">Load Dummy</button>
+
+<ion-list>
+    <button class="button button-clear button-full" ng-show="isLoading">
+        <ion-spinner icon="ripple"></ion-spinner>
+    </button>
+    <ion-item ng-show="isLoading == false && tracks.length === 0">
+        <h3>No tracks</h3>
+    </ion-item>
+    <ion-item ng-model="tracks" ng-repeat="item in tracks" ng-click="player.play(item)">
+        <h3>{{item.track}}</h3>
+        <p>{{item.artist}}</p>
+        <button class="button button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)"><i class="icon ion-ios-download"></i></button>
+        <!-- <ion-option-button class="button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)">Download</ion-option-button> -->
+    </ion-item>
+</ion-list>
