@@ -1,0 +1,41 @@
+
+{
+	"buildFiles" : 
+	[
+		"/Users/jinwoomin/git/public/github/subak/client/android/subak/app/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/Users/jinwoomin/Library/Android/sdk/cmake/3.6/bin/cmake --build /Users/jinwoomin/git/public/github/subak/client/android/subak/app/externalNativeBuild/cmake/debug/arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"native-lib-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "native-lib",
+			"buildCommand" : "/Users/jinwoomin/Library/Android/sdk/cmake/3.6/bin/cmake --build /Users/jinwoomin/git/public/github/subak/client/android/subak/app/externalNativeBuild/cmake/debug/arm64-v8a --target native-lib",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  -Dnative_lib_EXPORTS -isystem /Users/jinwoomin/Library/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /Users/jinwoomin/Library/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/libs/arm64-v8a/include -isystem /Users/jinwoomin/Library/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC      ",
+					"src" : "/Users/jinwoomin/git/public/github/subak/client/android/subak/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/Users/jinwoomin/git/public/github/subak/client/android/subak/app/externalNativeBuild/cmake/debug/arm64-v8a"
+				}
+			],
+			"output" : "/Users/jinwoomin/git/public/github/subak/client/android/subak/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so",
+			"toolchain" : "13287533121374826856"
+		}
+	},
+	"toolchains" : 
+	{
+		"13287533121374826856" : 
+		{
+			"cCompilerExecutable" : "/Users/jinwoomin/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/jinwoomin/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}
