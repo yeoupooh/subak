@@ -105,7 +105,8 @@
 
         $scope.download = function (item) {
             // Loads in the system browser (using inappbrowserplugin)
-            window.open(item.file, '_system');
+            // window.open(item.file, '_system');
+            cordova.InAppBrowser.open(item.file, '_system');
         };
 
         $scope.player = MediaPlayerSvc;
