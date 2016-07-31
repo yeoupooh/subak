@@ -13,7 +13,7 @@
     <ion-item ng-model="tracks" ng-repeat="item in tracks" ng-click="player.play(item)">
         <h3>{{item.track}}</h3>
         <p>{{item.artist}}</p>
-        <button class="button button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)"><i class="icon ion-ios-download"></i></button>
-        <!-- <ion-option-button class="button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)">Download</ion-option-button> -->
+        <!-- <button class="button button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)"><i class="icon ion-ios-download"></i></button> -->
+        <ion-option-button class="button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)">Download</ion-option-button>
     </ion-item>
 </ion-list>
