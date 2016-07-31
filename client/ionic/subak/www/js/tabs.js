@@ -29,7 +29,7 @@
         views: {
           'tab-charts': {
             templateUrl: "templates/tab-charts.html",
-            controller: 'ChartsCtrl'
+            controller: 'ChartsController'
           }
         }
       })
@@ -55,7 +55,7 @@
         views: {
           'tab-search': {
             templateUrl: "templates/tab-search.html",
-            controller: 'SearchCtrl'
+            controller: 'SearchController'
           }
         }
       });

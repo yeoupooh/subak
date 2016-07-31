@@ -4,22 +4,25 @@
     </ion-content>
 </ion-view> -->
 <!-- <ion-view view-title="Charts" ng-controller="ChartsController as charts"> -->
-  <ion-view view-title="Charts">
-    <ion-content ng-controller="TracksController" ng-init="initTracks('chart'); setListener('chartEngineChanged');">
+<ion-view view-title="Charts">
+  <ion-content ng-controller="TracksController" ng-init="initTracks('chart'); setListener('chartEngineChanged');">
 
-        <message></message>
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()" spinner="none" disable-pulling-rotation="true">
+    </ion-refresher>
 
-        <div class="item item-input item-select">
-            <div class="input-label">
-                Chart
-            </div>
-            <select ng-model="charts.selectedChart" ng-change="charts.onChartEngineChange()">
-                <option value="">-- choose chart --</option>
-                <option value="{{chart}}" ng-repeat="chart in charts.engines">{{chart.name}}</option>
-            </select>
-        </div>
+    <message></message>
 
-        <track-list></track-list>
+    <div class="item item-input item-select">
+      <div class="input-label">
+        Chart
+      </div>
+      <select ng-model="charts.selectedChart" ng-change="charts.onChartEngineChange()">
+        <option value="">-- choose chart --</option>
+        <option value="{{chart}}" ng-repeat="chart in charts.engines">{{chart.name}}</option>
+      </select>
+    </div>
 
-    </ion-content>
+    <track-list></track-list>
+
+  </ion-content>
 </ion-view>

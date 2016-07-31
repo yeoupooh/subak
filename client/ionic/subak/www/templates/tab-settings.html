@@ -1,15 +1,21 @@
 <ion-view title="Settings">
-    <ion-content>
-        <div class="list" ng-init="load()">
+  <ion-content>
+    <div class="list" ng-init="load()">
 
-            <ion-toggle ng-model="isDebug" ng-checked="isDebug" ng-change="onChange('isDebug', isDebug)">
-                Debug Mode
-            </ion-toggle>
+      <div class="item item-input item-stacked-label">
+        <span class="input-label">Server URL</span>
+        <input type="text" ng-model="serverUrl" placeholder="http://">
+        <button class="button button-positive" ng-click="updateServerUrl(serverUrl)">Update</button>
+      </div>
 
-            <ion-toggle ng-model="isDeveloper" ng-checked="isDeveloper" ng-change="onChange('isDeveloper', isDeveloper)">
-                Developer Mode
-            </ion-toggle>
+      <ion-toggle ng-model="isDebug" ng-checked="isDebug" ng-change="onChange('isDebug', isDebug)">
+        Debug Mode
+      </ion-toggle>
 
-        </div>
-    </ion-content>
+      <ion-toggle ng-model="isDeveloper" ng-checked="isDeveloper" ng-change="onChange('isDeveloper', isDeveloper)">
+        Developer Mode
+      </ion-toggle>
+
+    </div>
+  </ion-content>
 </ion-view>

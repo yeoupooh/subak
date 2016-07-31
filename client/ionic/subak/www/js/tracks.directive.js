@@ -8,7 +8,7 @@
     function TracksDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'js/tracks.html'
+            templateUrl: 'templates/tracks.html'
         };
     }
 

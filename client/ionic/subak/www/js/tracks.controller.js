@@ -97,7 +97,7 @@
                 tracks.push({
                     track: 'dummy title' + i,
                     artist: 'dummy artist' + i,
-                    file: 'http://pleer.com/browser-extension/files/4614316tvrN.mp3'
+                    file: 'http://localhost/test.mp3'
                 });
             }
             setTracks(tracks);
