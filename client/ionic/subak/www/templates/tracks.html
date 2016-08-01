@@ -10,7 +10,7 @@
     <ion-item ng-show="isLoading == false && tracks.length === 0">
         <h3>No tracks</h3>
     </ion-item>
-    <ion-item ng-model="tracks" collection-repeat="item in tracks" ng-click="player.play(item)">
+    <ion-item ng-model="tracks" ng-repeat="item in tracks" ng-click="player.play(item)">
         <h3>{{item.track}}</h3>
         <p>{{item.artist}}</p>
         <!-- <button class="button button-positive" ng-show="settings.get('isDeveloper')" ng-click="download(item)"><i class="icon ion-ios-download"></i></button> -->
