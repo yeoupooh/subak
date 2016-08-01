@@ -58,10 +58,13 @@
 
       if (engine.type === 'search') {
         console.log('getTracks: params=', params);
-      }
-
-      if (params !== undefined && params.keyword !== undefined) {
-        url = url.replace(':keyword', params.keyword);
+        if (params !== undefined && params.keyword !== undefined) {
+          url = url.replace(':keyword', params.keyword);
+        } else {
+          console.log('no keyword to search');
+          callbacks.always();
+          return;
+        }
       }
 
       $http.get(url).success(function(data) {
