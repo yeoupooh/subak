@@ -3,7 +3,7 @@
 
 extern "C"
 jstring
-Java_com_subakstudio_subak_MainActivity_stringFromJNI(
+Java_com_subakstudio_subak_android_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello from C++";

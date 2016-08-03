@@ -32,6 +32,11 @@ android {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.1.0'
+    //compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
+
     // Dagger2
     // https://mvnrepository.com/artifact/com.google.dagger/dagger
     compile group: 'com.google.dagger', name: 'dagger', version: '2.6'
