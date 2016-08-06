@@ -1,6 +1,11 @@
 package com.subakstudio.subak.android;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,13 +15,20 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.subakstudio.android.util.ActivityUtils;
 import com.subakstudio.subak.api.SubakApiInterface;
-import com.subakstudio.subak.api.SubakEngine;
+import com.subakstudio.subak.api.Engine;
+import com.subakstudio.subak.api.Track;
+import com.subakstudio.subak.api.TrackListResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,13 +53,14 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recyclerViewItems)
     RecyclerView recyclerViewItems;
 
-    private ItemsAdapter itemsAdapter;
-    private ArrayList<Item> items;
+    private TrackListAdapter trackListAdapter;
+    private ArrayList<Track> trackList;
 
     @BindView(R.id.spinner)
     Spinner spinner;
-    ArrayAdapter<SubakEngine> spinnerAdapter;
-    List<SubakEngine> engines;
+    ArrayAdapter<Engine> spinnerDataAdapter;
+    List<Engine> engines;
+    private ProgressDialog progressDialog;
 
     @OnItemSelected(R.id.spinner)
     public void spinnerItemSelected(Spinner spinner, int position) {
@@ -72,8 +86,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpEnginesSpinner() {
         engines = new ArrayList<>();
-        spinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, engines);
-        spinner.setAdapter(spinnerAdapter);
+        spinnerDataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, engines);
+        spinner.setAdapter(spinnerDataAdapter);
+        // Specify the layout to use when the list of choices appears
+        spinnerDataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                Log.d(TAG, "item:" + parent.getItemAtPosition(pos));
+                if (parent.getItemAtPosition(pos) instanceof Engine) {
+                    selectEngine((Engine) parent.getItemAtPosition(pos));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.d(TAG, "item nothing: " + parent);
+            }
+        });
     }
 
     private void setUpRestAdaptor() {
@@ -81,13 +111,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpList() {
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
-        items = new ArrayList<>();
+        trackList = new ArrayList<>();
+        // FIXME remove dummy data
         for (int i = 0; i < 100; i++) {
-            items.add(new Item("title", String.valueOf(i)));
+            Track track = new Track();
+            track.setTrack("track" + i);
+            track.setArtist("artist" + i);
+            trackList.add(track);
         }
-        itemsAdapter = new ItemsAdapter(items);
+        trackListAdapter = new TrackListAdapter(trackList);
+        final Context context = this;
+        trackListAdapter.setOnTrackSelectedListener(new ITrackSelectedListener() {
+            @Override
+            public void onSelect(Track track) {
+                if (track.getFile() != null) {
+                    ActivityUtils.launchMusicPlayer(context, track.getFile());
+                }
+            }
+        });
         recyclerViewItems.setHasFixedSize(true);
-        recyclerViewItems.setAdapter(itemsAdapter);
+        recyclerViewItems.setAdapter(trackListAdapter);
     }
 
     @OnClick(R.id.fab)
@@ -100,33 +143,97 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestGetEngines() {
+        showProgressDialog("Loading engines...");
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:8081")
+                .baseUrl(getServerBaseUrl())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
 
         SubakApiInterface service = retrofit.create(SubakApiInterface.class);
-        Call<List<SubakEngine>> call = service.getEngines();
-        call.enqueue(new Callback<List<SubakEngine>>() {
+        Call<List<Engine>> call = service.getEngines();
+        call.enqueue(new Callback<List<Engine>>() {
             @Override
-            public void onResponse(Call<List<SubakEngine>> call, Response<List<SubakEngine>> response) {
+            public void onResponse(Call<List<Engine>> call, Response<List<Engine>> response) {
                 Log.d(TAG, "response:" + response.body().size());
-                for (SubakEngine engine : response.body()) {
+                for (Engine engine : response.body()) {
                     Log.d(TAG, "engine:" + engine.getId());
                     engines.add(engine);
                 }
+                spinnerDataAdapter.notifyDataSetChanged();
+                if (engines.size() > 0) {
+                    spinner.setSelection(0);
+                }
+                hideProgressDialog();
             }
 
             @Override
-            public void onFailure(Call<List<SubakEngine>> call, Throwable t) {
+            public void onFailure(Call<List<Engine>> call, Throwable t) {
                 Log.e(TAG, "response:" + t);
+                hideProgressDialog();
             }
         });
     }
 
+    private String getServerBaseUrl() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(SettingsActivity.KEY_SERVER_BASE_URL, "http://localhost:8081");
+    }
+
+    private void selectEngine(Engine engine) {
+        Log.d(TAG, "select: engine=" + engine + ", type:" + engine.getType());
+        if (engine.getType().equals(SubakApiInterface.ENGINE_TYPE_CHART)) {
+            getTrackList(engine);
+        }
+    }
+
+    private void getTrackList(Engine engine) {
+        Log.d(TAG, "getTrackList: engine=" + engine);
+        showProgressDialog("Getting tracks...");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getServerBaseUrl())
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+
+        SubakApiInterface service = retrofit.create(SubakApiInterface.class);
+        Call<ResponseBody> call = service.getTracks(engine.getPath());
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String trackListJson = response.body().string();
+                    Log.d(TAG, "res:" + trackListJson);
+                    ObjectMapper mapper = new ObjectMapper();
+                    TrackListResponse trackListResponse = mapper.readValue(trackListJson, TrackListResponse.class);
+                    trackList.clear();
+                    trackList.addAll(trackListResponse.getTracks());
+                    trackListAdapter.notifyDataSetChanged();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    hideProgressDialog();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideProgressDialog();
+            }
+        });
+    }
+
+    private void hideProgressDialog() {
+        progressDialog.hide();
+    }
+
+    private void showProgressDialog(String msg) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(msg);
+        progressDialog.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds trackList to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -140,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

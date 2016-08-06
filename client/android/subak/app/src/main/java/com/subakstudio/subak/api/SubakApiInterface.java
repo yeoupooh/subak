@@ -12,8 +12,10 @@ import retrofit2.http.Url;
  */
 
 public interface SubakApiInterface {
+    String ENGINE_TYPE_CHART = "chart";
+
     @GET("/api/engines")
-    Call<List<SubakEngine>> getEngines();
+    Call<List<Engine>> getEngines();
 
     @GET
     Call<ResponseBody> getTracks(@Url String url);

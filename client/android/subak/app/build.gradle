@@ -35,26 +35,32 @@ dependencies {
     // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
     compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.1.0'
     //compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
 
     // Dagger2
     // https://mvnrepository.com/artifact/com.google.dagger/dagger
     compile group: 'com.google.dagger', name: 'dagger', version: '2.6'
-    apt 'com.google.dagger:dagger-compiler:2.6'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
-
-    // Butterknife
-    compile 'com.jakewharton:butterknife:8.2.1'
-    apt 'com.jakewharton:butterknife-compiler:8.2.1'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    // Retrofit2
+    compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
+
+    // Butterknife
+    compile 'com.jakewharton:butterknife:8.2.1'
+
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
     compile 'com.android.support:design:24.1.1'
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:24.1.1'
-    compile 'com.google.android.gms:play-services-ads:9.2.1'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
+    compile 'com.android.support:support-v4:24.1.1'
+
+    testCompile 'junit:junit:4.12'
+
+    apt 'com.google.dagger:dagger-compiler:2.6'
+    apt 'com.jakewharton:butterknife-compiler:8.2.1'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }

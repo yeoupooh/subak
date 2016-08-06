@@ -25,7 +25,7 @@ import javax.annotation.Generated;
         "type",
         "path"
 })
-public class SubakEngine {
+public class Engine {
 
     @JsonProperty("id")
     private String id;
