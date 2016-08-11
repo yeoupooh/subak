@@ -13,6 +13,7 @@ import retrofit2.http.Url;
 
 public interface SubakApiInterface {
     String ENGINE_TYPE_CHART = "chart";
+    String ENGINE_TYPE_SEARCH = "search";
 
     @GET("/api/engines")
     Call<List<Engine>> getEngines();

@@ -2,12 +2,14 @@ package com.subakstudio.subak.android;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.subakstudio.android.util.ActivityUtils;
 import com.subakstudio.subak.api.Track;
 
 import java.util.List;
@@ -20,6 +22,8 @@ import butterknife.ButterKnife;
  */
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
 
+    public static final String ACTION_PLAY = "Play";
+    public static final String ACTION_DOWNLOAD = "Download";
     private final List<Track> trackList;
     private static final String TAG = TrackListAdapter.class.getSimpleName();
     private ITrackSelectedListener trackSelectedListener;
@@ -43,6 +47,13 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         holder.title.setText(track.getTrack());
         holder.artist.setText(track.getArtist());
         holder.itemView.setTag(R.string.tag_track, track);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                view.showContextMenu();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -54,7 +65,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         this.trackSelectedListener = trackSelectedListener;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         private final ITrackSelectedListener selectedListener;
 
         @BindView(R.id.textViewTitle)
@@ -69,18 +80,38 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
+            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            Track track = (Track) itemView.getTag(R.string.tag_track);
+            Log.d(TAG, "click: track=" + getTrack());
+            view.showContextMenu();
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle(String.format("%s - %s", getTrack().getArtist(), getTrack().getTrack()));
+            addMenuItem(contextMenu, view, ACTION_PLAY);
+            addMenuItem(contextMenu, view, ACTION_DOWNLOAD);
+        }
+
+        private Track getTrack() {
+            return (Track) itemView.getTag(R.string.tag_track);
+        }
+
+        private void addMenuItem(ContextMenu contextMenu, View view, String title) {
+            MenuItem menuItem = contextMenu.add(Menu.NONE, view.getId(), Menu.NONE, title);
+            menuItem.setOnMenuItemClickListener(this);
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            Log.d(TAG, "menu item click: " + menuItem);
+            Track track = getTrack();
             Log.d(TAG, "click: track=" + track);
-//            EventBus.getDefault().post(new BookSelectedEvent(
-//                    (Long)view.getTag(R.string.tag_book_id),
-//                    (String)view.getTag(R.string.tag_book_title)));
-            if (selectedListener != null) {
-                selectedListener.onSelect(track);
-            }
+            selectedListener.onAction(menuItem.getTitle().toString(), track);
+            return true;
         }
     }
 }
