@@ -1,54 +1,64 @@
 package com.subakstudio.subak.android;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.subakstudio.android.util.ActivityUtils;
-import com.subakstudio.subak.api.SubakApiInterface;
 import com.subakstudio.subak.api.Engine;
+import com.subakstudio.subak.api.SubakApiInterface;
+import com.subakstudio.subak.api.SubakClient;
 import com.subakstudio.subak.api.Track;
 import com.subakstudio.subak.api.TrackListResponse;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import butterknife.OnItemSelected;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 112;
     // Automatically finds each field by the specified ID.
-    @BindView(R.id.textViewHelloWorld)
-    TextView textViewHelloWorld;
+//    @BindView(R.id.textViewHelloWorld)
+//    TextView textViewHelloWorld;
 
     @BindView(R.id.recyclerViewItems)
     RecyclerView recyclerViewItems;
@@ -56,11 +66,18 @@ public class MainActivity extends AppCompatActivity {
     private TrackListAdapter trackListAdapter;
     private ArrayList<Track> trackList;
 
+    @BindView(R.id.editText)
+    EditText editTextSearch;
+
     @BindView(R.id.spinner)
-    Spinner spinner;
-    ArrayAdapter<Engine> spinnerDataAdapter;
+    Spinner spinnerEngines;
+    ArrayAdapter<Engine> spinnerEnginesDataAdapter;
     List<Engine> engines;
     private ProgressDialog progressDialog;
+    private SubakClient client;
+    private DownloadManager dm;
+    private long enqueue;
+    private Track keptTrack;
 
     @OnItemSelected(R.id.spinner)
     public void spinnerItemSelected(Spinner spinner, int position) {
@@ -68,6 +85,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onitemselected: path=" + engines.get(position).getPath());
     }
 
+    @OnEditorAction(R.id.editText)
+    public boolean editTextSearchAction(TextView v, int actionId, KeyEvent event) {
+        Log.d(TAG, "onEditorAction: ");
+        getTrackList((Engine) spinnerEngines.getSelectedItem());
+        return true;
+    }
+
+    private void getTrackList(Engine engine, Editable text) {
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,19 +107,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        setUpSubakClient();
         setUpRestAdaptor();
-        setUpList();
+        setUpTrackList();
         setUpEnginesSpinner();
 
+        getEngineList();
+    }
+
+    private void setUpSubakClient() {
+        client = new SubakClient(getServerBaseUrl());
     }
 
     private void setUpEnginesSpinner() {
         engines = new ArrayList<>();
-        spinnerDataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, engines);
-        spinner.setAdapter(spinnerDataAdapter);
+        spinnerEnginesDataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, engines);
+        spinnerEngines.setAdapter(spinnerEnginesDataAdapter);
         // Specify the layout to use when the list of choices appears
-        spinnerDataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerEnginesDataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEngines.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 Log.d(TAG, "item:" + parent.getItemAtPosition(pos));
@@ -109,7 +145,27 @@ public class MainActivity extends AppCompatActivity {
     private void setUpRestAdaptor() {
     }
 
-    private void setUpList() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    downloadTrack(keptTrack);
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void setUpTrackList() {
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
         trackList = new ArrayList<>();
         // FIXME remove dummy data
@@ -120,58 +176,118 @@ public class MainActivity extends AppCompatActivity {
             trackList.add(track);
         }
         trackListAdapter = new TrackListAdapter(trackList);
-        final Context context = this;
+        final Activity activity = this;
         trackListAdapter.setOnTrackSelectedListener(new ITrackSelectedListener() {
             @Override
-            public void onSelect(Track track) {
-                if (track.getFile() != null) {
-                    ActivityUtils.launchMusicPlayer(context, track.getFile());
+            public void onAction(String action, Track track) {
+                Log.d(TAG, "onaction:" + action);
+                if (action.equals(TrackListAdapter.ACTION_PLAY)) {
+                    if (track.getFile() != null) {
+                        ActivityUtils.launchMusicPlayer(activity, track.getFile());
+                    }
+                } else if (action.equals(TrackListAdapter.ACTION_DOWNLOAD)) {
+                    int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                REQUEST_CODE_ASK_PERMISSIONS);
+                        keptTrack = track;
+                        return;
+                    }
+                    downloadTrack(track);
                 }
             }
         });
         recyclerViewItems.setHasFixedSize(true);
         recyclerViewItems.setAdapter(trackListAdapter);
+        registerForContextMenu(recyclerViewItems);
+        recyclerViewItems.setOnContextClickListener(new View.OnContextClickListener() {
+            @Override
+            public boolean onContextClick(View view) {
+                Log.d(TAG, "oncontextclick: view" + view);
+                return false;
+            }
+        });
     }
 
+    private void downloadTrack(Track track) {
+        // http://stackoverflow.com/questions/16773348/set-custom-folder-android-download-manager
+        dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(track.getFile()));
+        request.setMimeType("audio/mp3");
+        request.setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                String.format("Subak/%s - %s.%s",
+                        track.getArtist(), track.getTrack(), "mp3"));
+        Log.d(TAG, "enqueue track: " + track.getFile());
+        enqueue = dm.enqueue(request);
+    }
+
+    // TODO Remove this if it is not useful
     @OnClick(R.id.fab)
     public void sayHi(FloatingActionButton button) {
         Snackbar.make(button, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-        textViewHelloWorld.setText(stringFromJNI());
-
-        requestGetEngines();
+//        textViewHelloWorld.setText(stringFromJNI());
     }
 
-    private void requestGetEngines() {
-        showProgressDialog("Loading engines...");
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getServerBaseUrl())
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-
-        SubakApiInterface service = retrofit.create(SubakApiInterface.class);
-        Call<List<Engine>> call = service.getEngines();
-        call.enqueue(new Callback<List<Engine>>() {
+    private void getEngineList() {
+        client.setSubackListener(new SubakClient.ISubakListener() {
             @Override
-            public void onResponse(Call<List<Engine>> call, Response<List<Engine>> response) {
-                Log.d(TAG, "response:" + response.body().size());
-                for (Engine engine : response.body()) {
-                    Log.d(TAG, "engine:" + engine.getId());
-                    engines.add(engine);
-                }
-                spinnerDataAdapter.notifyDataSetChanged();
-                if (engines.size() > 0) {
-                    spinner.setSelection(0);
-                }
-                hideProgressDialog();
+            public void onRequest() {
+                showProgressDialog("Loading engines...");
             }
 
             @Override
-            public void onFailure(Call<List<Engine>> call, Throwable t) {
-                Log.e(TAG, "response:" + t);
+            public void onSuccess(Object result) {
+                if (result instanceof List) {
+                    engines.clear();
+
+                    // sort engine by chart and search
+                    List<Engine> chartList = new ArrayList<>();
+                    List<Engine> searchList = new ArrayList<>();
+                    for (Engine engine : (List<Engine>) result) {
+                        Log.d(TAG, "engine:" + engine.getId());
+                        if (engine.getType().equals(SubakApiInterface.ENGINE_TYPE_CHART)) {
+                            chartList.add(engine);
+                        } else {
+                            searchList.add(engine);
+                        }
+                    }
+                    Collections.sort(chartList, new Comparator<Engine>() {
+                        @Override
+                        public int compare(Engine e1, Engine e2) {
+                            return e1.getName().compareTo(e2.getName());
+                        }
+                    });
+                    Collections.sort(searchList, new Comparator<Engine>() {
+                        @Override
+                        public int compare(Engine e1, Engine e2) {
+                            return e1.getName().compareTo(e2.getName());
+                        }
+                    });
+                    engines.addAll(chartList);
+                    engines.addAll(searchList);
+
+                    spinnerEnginesDataAdapter.notifyDataSetChanged();
+
+                    if (engines.size() > 0) {
+                        spinnerEngines.setSelection(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onFinally() {
                 hideProgressDialog();
             }
         });
+        client.getEngineList();
     }
 
     private String getServerBaseUrl() {
@@ -188,37 +304,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void getTrackList(Engine engine) {
         Log.d(TAG, "getTrackList: engine=" + engine);
-        showProgressDialog("Getting tracks...");
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getServerBaseUrl())
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-
-        SubakApiInterface service = retrofit.create(SubakApiInterface.class);
-        Call<ResponseBody> call = service.getTracks(engine.getPath());
-        call.enqueue(new Callback<ResponseBody>() {
+        client.setSubackListener(new SubakClient.ISubakListener() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String trackListJson = response.body().string();
-                    Log.d(TAG, "res:" + trackListJson);
-                    ObjectMapper mapper = new ObjectMapper();
-                    TrackListResponse trackListResponse = mapper.readValue(trackListJson, TrackListResponse.class);
+            public void onRequest() {
+                showProgressDialog("Getting tracks...");
+            }
+
+            @Override
+            public void onSuccess(Object result) {
+                if (result instanceof TrackListResponse) {
+                    TrackListResponse trackListResponse = (TrackListResponse) result;
                     trackList.clear();
                     trackList.addAll(trackListResponse.getTracks());
                     trackListAdapter.notifyDataSetChanged();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    hideProgressDialog();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onFinally() {
                 hideProgressDialog();
             }
         });
+        client.getTrackList(engine, editTextSearch.getText().toString());
     }
 
     private void hideProgressDialog() {
@@ -258,10 +370,10 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
+//    public native String stringFromJNI();
 
     // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+//    static {
+//        System.loadLibrary("native-lib");
+//    }
 }
