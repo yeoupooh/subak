@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
 
     public static final String ACTION_PLAY = "Play";
+    public static final String ACTION_SEARCH_VIA = "Search...";
     public static final String ACTION_DOWNLOAD = "Download";
     private final List<Track> trackList;
     private static final String TAG = TrackListAdapter.class.getSimpleName();
@@ -93,6 +94,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             contextMenu.setHeaderTitle(String.format("%s - %s", getTrack().getArtist(), getTrack().getTrack()));
             addMenuItem(contextMenu, view, ACTION_PLAY);
+            addMenuItem(contextMenu, view, ACTION_SEARCH_VIA);
             addMenuItem(contextMenu, view, ACTION_DOWNLOAD);
         }
 

@@ -194,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     downloadTrack(track);
+                } else if (action.equals(TrackListAdapter.ACTION_SEARCH_VIA)) {
+                    editTextSearch.setText(track.getArtist() + " " + track.getTrack());
+                } else {
+                    Toast.makeText(activity, "Unknown action: " + action, Toast.LENGTH_LONG).show();
                 }
             }
         });
