@@ -1,0 +1,26 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_editor_absoluteX="0dp"
+    app:layout_editor_absoluteY="80dp"
+    tools:context="com.subakstudio.subak.android.Main2Activity$PlaceholderFragment"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="80dp">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewItems"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/content_main"
+        app:layout_constraintLeft_toLeftOf="@+id/content_main"
+        app:layout_constraintRight_toRightOf="@+id/content_main"
+        app:layout_constraintTop_toTopOf="@+id/content_main" />
+
+</android.support.constraint.ConstraintLayout>

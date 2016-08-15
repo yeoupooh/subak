@@ -107,9 +107,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         setUpSubakClient();
-        setUpRestAdaptor();
         setUpTrackList();
         setUpEnginesSpinner();
 
@@ -140,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "item nothing: " + parent);
             }
         });
-    }
-
-    private void setUpRestAdaptor() {
     }
 
     @Override
@@ -253,10 +248,10 @@ public class MainActivity extends AppCompatActivity {
                         engines.clear();
                         addEngines(SubakApiInterface.ENGINE_TYPE_CHART, result, engines);
                         addEngines(SubakApiInterface.ENGINE_TYPE_SEARCH, result, engines);
-                        if (engines.size() > 0) {
-                            selectEngine(engines.get(0));
-                        }
                         spinnerEnginesDataAdapter.notifyDataSetChanged();
+//                        if (engines.size() > 0) {
+//                            selectEngine(engines.get(0));
+//                        }
                     }
 
                     @Override

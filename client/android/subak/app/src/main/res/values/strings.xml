@@ -81,4 +81,8 @@
     <string name="pref_title_server_base_url">Server URL</string>
     <string name="search">Search</string>
     <string name="search_keyword">Search Keyword</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Keyword to search</string>
 </resources>

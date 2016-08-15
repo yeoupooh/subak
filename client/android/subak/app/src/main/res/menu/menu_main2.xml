@@ -1,0 +1,41 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.subakstudio.subak.android.Main2Activity">
+
+    <item
+        android:id="@+id/search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="100"
+        android:title="@string/search_title"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="collapseActionView|always" />
+    <item
+        android:id="@+id/action_bar_remove"
+        android:orderInCategory="200"
+        android:title="Remove"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bar_add"
+        android:orderInCategory="201"
+        android:title="Add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bar_engine"
+        android:orderInCategory="300"
+        android:title="From"
+        app:showAsAction="ifRoom" />
+    <!--<item-->
+    <!--android:id="@+id/app_bar_search"-->
+    <!--android:actionViewClass="android.support.v7.widget.SearchView"-->
+    <!--android:icon="@drawable/ic_search_black_24dp"-->
+    <!--android:title="Search"-->
+    <!--android:orderInCategory="102"-->
+    <!--android:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="900"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>
