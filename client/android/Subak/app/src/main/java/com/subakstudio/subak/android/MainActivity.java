@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -42,8 +41,6 @@ import com.subakstudio.subak.api.Track;
 import com.subakstudio.subak.api.TrackListResponse;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,6 +48,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnItemSelected;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onEditorAction: ");
         getTrackList((Engine) spinnerEngines.getSelectedItem());
         return true;
-    }
-
-    private void getTrackList(Engine engine, Editable text) {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -233,65 +233,80 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(button, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 //        textViewHelloWorld.setText(stringFromJNI());
+        getEngineList();
     }
 
     private void getEngineList() {
-        client.setSubackListener(new SubakClient.ISubakListener() {
-            @Override
-            public void onRequest() {
-                showProgressDialog("Loading engines...");
-            }
+        showProgressDialog("Loading engines...");
+        final List<Engine> result = new ArrayList<>();
+        client.getEngineList()
+                // To avoid backpress exception
+                .onBackpressureBuffer(10000)
+                // To avoid networkonthread exception
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Engine>() {
+                    @Override
+                    public void onCompleted() {
+                        hideProgressDialog();
 
-            @Override
-            public void onSuccess(Object result) {
-                if (result instanceof List) {
-                    engines.clear();
-
-                    // sort engine by chart and search
-                    List<Engine> chartList = new ArrayList<>();
-                    List<Engine> searchList = new ArrayList<>();
-                    for (Engine engine : (List<Engine>) result) {
-                        Log.d(TAG, "engine:" + engine.getId());
-                        if (engine.getType().equals(SubakApiInterface.ENGINE_TYPE_CHART)) {
-                            chartList.add(engine);
-                        } else {
-                            searchList.add(engine);
+                        engines.clear();
+                        addEngines(SubakApiInterface.ENGINE_TYPE_CHART, result, engines);
+                        addEngines(SubakApiInterface.ENGINE_TYPE_SEARCH, result, engines);
+                        if (engines.size() > 0) {
+                            selectEngine(engines.get(0));
                         }
+                        spinnerEnginesDataAdapter.notifyDataSetChanged();
                     }
-                    Collections.sort(chartList, new Comparator<Engine>() {
-                        @Override
-                        public int compare(Engine e1, Engine e2) {
-                            return e1.getName().compareTo(e2.getName());
-                        }
-                    });
-                    Collections.sort(searchList, new Comparator<Engine>() {
-                        @Override
-                        public int compare(Engine e1, Engine e2) {
-                            return e1.getName().compareTo(e2.getName());
-                        }
-                    });
-                    engines.addAll(chartList);
-                    engines.addAll(searchList);
 
-                    spinnerEnginesDataAdapter.notifyDataSetChanged();
-
-                    if (engines.size() > 0) {
-                        spinnerEngines.setSelection(0);
+                    @Override
+                    public void onError(Throwable e) {
+                        hideProgressDialog();
+                        showError(e);
                     }
-                }
-            }
 
-            @Override
-            public void onError(Throwable throwable) {
+                    @Override
+                    public void onNext(Engine engine) {
+                        result.add(engine);
+                    }
+                });
+    }
 
-            }
+    private void addEngines(final String engineType, List<Engine> result, final List<Engine> toList) {
+        Observable.from(result)
+                .filter(new Func1<Engine, Boolean>() {
+                    @Override
+                    public Boolean call(Engine engine) {
+                        return engine.getType().equals(engineType);
+                    }
+                })
+                .toSortedList(new Func2<Engine, Engine, Integer>() {
+                    @Override
+                    public Integer call(Engine engine, Engine engine2) {
+                        return engine.getName().compareTo(engine2.getName());
+                    }
+                })
+                .subscribe(new Subscriber<List<Engine>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onFinally() {
-                hideProgressDialog();
-            }
-        });
-        client.getEngineList();
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Engine> list) {
+                        toList.addAll(list);
+                    }
+                });
+    }
+
+    private void showError(Throwable e) {
+        e.printStackTrace();
+        Log.e(TAG, "error in gettting engine list. e=" + e.getMessage());
+        Toast.makeText(this, String.format("%s: %s", e.getClass().getSimpleName(), e.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 
     private String getServerBaseUrl() {
@@ -307,34 +322,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getTrackList(Engine engine) {
-        Log.d(TAG, "getTrackList: engine=" + engine);
-        client.setSubackListener(new SubakClient.ISubakListener() {
-            @Override
-            public void onRequest() {
-                showProgressDialog("Getting tracks...");
-            }
+        Log.d(TAG, "getTrackListLegacy: engine=" + engine + ",path=" + engine.getPath());
+        showProgressDialog("Getting tracks...");
+        client.getTrackList(engine, editTextSearch.getText().toString())
+                // To avoid backpress exception
+                .onBackpressureBuffer(10000)
+                // To avoid networkonthread exception
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TrackListResponse>() {
+                               @Override
+                               public void onCompleted() {
+                                   hideProgressDialog();
+                               }
 
-            @Override
-            public void onSuccess(Object result) {
-                if (result instanceof TrackListResponse) {
-                    TrackListResponse trackListResponse = (TrackListResponse) result;
-                    trackList.clear();
-                    trackList.addAll(trackListResponse.getTracks());
-                    trackListAdapter.notifyDataSetChanged();
-                }
-            }
+                               @Override
+                               public void onError(Throwable e) {
+                                   hideProgressDialog();
+                                   showError(e);
+                               }
 
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onFinally() {
-                hideProgressDialog();
-            }
-        });
-        client.getTrackList(engine, editTextSearch.getText().toString());
+                               @Override
+                               public void onNext(TrackListResponse trackListResponse) {
+                                   trackList.clear();
+                                   trackList.addAll(trackListResponse.getTracks());
+                                   trackListAdapter.notifyDataSetChanged();
+                               }
+                           }
+                );
     }
 
     private void hideProgressDialog() {

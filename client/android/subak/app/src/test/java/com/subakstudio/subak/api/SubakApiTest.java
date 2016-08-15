@@ -1,11 +1,13 @@
 package com.subakstudio.subak.api;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import rx.Subscriber;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -16,18 +18,9 @@ public class SubakApiTest {
 
     private boolean taskDone;
 
-    @Test
-    public void testGetEngineList() throws InterruptedException {
-        SubakClient client = new SubakClient("http://localhost:8081");
-        DummySubakClientListner listener = new DummySubakClientListner();
-        client.setSubackListener(listener);
-        client.getEngineList();
-
-        waitUntilTaskDone();
-
-        assertTrue(listener.getResult() instanceof List);
-        System.out.println(listener.getResult());
-
+    @Before
+    public void setup() {
+        taskDone = false;
     }
 
     private void waitUntilTaskDone() throws InterruptedException {
@@ -37,53 +30,67 @@ public class SubakApiTest {
     }
 
     @Test
-    public void testGetTrackList() throws InterruptedException {
+    public void testGetEngineList() throws Exception {
         SubakClient client = new SubakClient("http://localhost:8081");
-        DummySubakClientListner listener = new DummySubakClientListner();
-        client.setSubackListener(listener);
-        Engine engine = new Engine();
-        engine.setType(SubakApiInterface.ENGINE_TYPE_SEARCH);
-        engine.setPath("/api/bobborst/year/billboard/top/year/:keyword");
-        client.getTrackList(engine, "2016");
+        final List<Engine> result = new ArrayList<>();
+        client.getEngineList()
+                .subscribe(new Subscriber<Engine>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("oncompleted");
+                        taskDone = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        System.out.println("onerror: e=" + e);
+                        taskDone = true;
+                    }
+
+                    @Override
+                    public void onNext(Engine engine) {
+                        System.out.println("onnext: engine=" + engine);
+                        result.add(engine);
+                    }
+                });
 
         waitUntilTaskDone();
 
-        assertNotNull(listener.getResult());
-        assertEquals(TrackListResponse.class.getName(), listener.getResult().getClass().getName());
-        System.out.println(listener.getResult());
+        assertTrue(result.size() > 0);
     }
 
+    @Test
+    public void testTrackList() throws Exception {
+        final List<Track> result = new ArrayList<>();
 
-    class DummySubakClientListner implements SubakClient.ISubakListener {
+        SubakClient client = new SubakClient("http://localhost:8081");
+        Engine engine = new Engine();
+        engine.setType(SubakApiInterface.ENGINE_TYPE_SEARCH);
+        engine.setPath("/api/bobborst/year/billboard/top/year/:keyword");
+        client.getTrackList(engine, "2016")
+                .subscribe(new Subscriber<TrackListResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("oncompleted");
+                        taskDone = true;
+                    }
 
-        private Object result;
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("onerror: e=" + e);
+                        taskDone = true;
+                    }
 
-        @Override
-        public void onRequest() {
-            synchronized (this) {
-                taskDone = false;
-            }
-        }
+                    @Override
+                    public void onNext(TrackListResponse trackListResponse) {
+                        System.out.println("onnext: response=" + trackListResponse);
+                        result.addAll(trackListResponse.getTracks());
+                    }
+                });
 
-        @Override
-        public void onSuccess(Object result) {
-            this.result = result;
-        }
+        waitUntilTaskDone();
 
-        public Object getResult() {
-            return result;
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
-
-        @Override
-        public void onFinally() {
-            synchronized (this) {
-                taskDone = true;
-            }
-        }
+        assertTrue(result.size() > 0);
     }
 }
