@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -24,9 +26,14 @@ public class SubakClient {
     private final String serverBaseUrl;
 
     private SubakApiInterface getService() {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .readTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(1, TimeUnit.MINUTES).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(serverBaseUrl)
                 .addConverterFactory(JacksonConverterFactory.create())
+                .client(client)
                 .build();
         return retrofit.create(SubakApiInterface.class);
     }
