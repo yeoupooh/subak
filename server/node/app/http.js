@@ -53,7 +53,7 @@
         return resp;
     }
 
-    function getUsingSyncRequest(url) {
+    function getUsingSyncRequest(url, encoding) {
         var resp,
             respBody;
 
@@ -64,7 +64,10 @@
             timeout: 10000
         });
 
-        respBody = resp.getBody('utf-8');
+        if (encoding === undefined) {
+          encoding = 'utf-8';
+        }
+        respBody = resp.getBody(encoding);
 
         return respBody;
     }
