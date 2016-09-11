@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+		xmlns:local="clr-namespace:Subak" 
+		x:Class="Subak.SubakPage">
+	<ContentPage.Content>
+	<!--	<Label Text="Welcome to Xamarin Forms!1" VerticalOptions="Center" HorizontalOptions="Center" />-->
+	<!--	<Label Text="Welcome to Xamarin Forms!2" VerticalOptions="Center" HorizontalOptions="Center" />-->
+	<ListView x:Name="listView" RowHeight="80">
+		<ListView.ItemTemplate>
+			<DataTemplate>
+				<ViewCell>
+					<StackLayout Orientation="Horizontal" Padding="5">
+						<Image Source="http://www.flaticon.com/download-icon"/>
+						<StackLayout Orientation="Vertical">
+							<Label Text="{Binding Title}" FontSize="Large">
+							</Label>
+							<Label Text="{Binding Artist}" TextColor="Green" VerticalTextAlignment="End">
+							</Label>
+							<Label Text="{Binding File}" FontSize="Small" TextColor="Gray">
+						`</Label>
+						</StackLayout>
+					</StackLayout>
+				</ViewCell>
+			</DataTemplate>
+		</ListView.ItemTemplate>
+	</ListView>
+		</ContentPage.Content>
+	
+</ContentPage>
