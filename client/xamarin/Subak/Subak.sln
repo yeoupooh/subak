@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subak.Droid", "Droid\Subak.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subak.UITests", "UITests\Subak.UITests.csproj", "{6ED5F75A-46AE-4EBF-9144-2719ABFB5AC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subak.GtkSharp", "Subak.GtkSharp\Subak.GtkSharp.csproj", "{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -55,5 +57,17 @@ Global
 		{6ED5F75A-46AE-4EBF-9144-2719ABFB5AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ED5F75A-46AE-4EBF-9144-2719ABFB5AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ED5F75A-46AE-4EBF-9144-2719ABFB5AC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|iPhone.Build.0 = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E82FB3-DD61-4100-B4C5-7CEA6EBA9F7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
