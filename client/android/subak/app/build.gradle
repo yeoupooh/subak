@@ -5,6 +5,9 @@ apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
