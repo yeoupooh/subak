@@ -9,7 +9,7 @@ android {
         exclude 'META-INF/LICENSE'
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.subakstudio.subak"
         minSdkVersion 21
