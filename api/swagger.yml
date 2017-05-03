@@ -41,3 +41,71 @@ paths:
                   description: |
                     Relative URL of the engine. It can includes ":"
                   type: string
+  '/bobborst/year/billboard/top/year/{year}':
+    get:
+      description: Gets tracks from Bobborst
+      parameters:
+        - description: Specified year.
+          name: year
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Response.
+          schema:
+            $ref: '#/definitions/responseOfTracks'
+  '/{site}/{type}/{category}/{period}/tracks':
+    get:
+      description: Gets tracks from Melon
+      parameters:
+        - description: Id of the the site.
+          name: site
+          in: path
+          type: string
+          required: true
+        - description: Type of the site.
+          name: type
+          in: path
+          type: string
+          required: true
+        - description: Categroy of the site.
+          name: category
+          in: path
+          type: string
+          required: true
+        - description: Period of the chart.
+          name: period
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Response.
+          schema:
+            $ref: '#/definitions/responseOfTracks'
+definitions:
+  responseOfTracks:
+    description: Reponse of tracks requests.
+    type: object
+    properties:
+      found:
+        description: Number of tracks.
+        type: integer
+      tracks:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: Id of the track.
+              type: string
+            artist:
+              description: Artist of the track.
+              type: string
+            track:
+              description: Name of the track.
+              type: string
+            albumart:
+              description: Album Art URL of the track.
+              type: string
