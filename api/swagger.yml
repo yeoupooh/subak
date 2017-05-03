@@ -1,0 +1,43 @@
+swagger: '2.0'
+info:
+  title: Subak API
+  version: 1.0.0
+  description: |
+    Provides Subak Music Service APIs.
+  contact:
+    name: Subak Studio
+    url: 'http://github.com/yeoupooh/'
+    email: subak.studio@gmail.com
+host: 'localhost:8081'
+schemes:
+  - http
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /engins:
+    get:
+      description: Gets all of engines.
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Unique Id for the engine.
+                  type: string
+                name:
+                  description: Name of the engine to be displayed.
+                  type: string
+                type:
+                  description: Type of the engine. "search" or "chart"
+                  type: string
+                path:
+                  description: |
+                    Relative URL of the engine. It can includes ":"
+                  type: string
